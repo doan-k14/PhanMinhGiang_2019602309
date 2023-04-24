@@ -6,58 +6,60 @@ from bs4 import BeautifulSoup
 from multiprocessing import Process
 import hashlib
 
-dict = {'title': [], 'description': [], 'topic': []}
+dict = {'topic': [], 'content':[] }
 failed_links = []
 
 
 def crawl(links, tl):
     for link in links:
         news = requests.get(link)
+        print("Crawling ",link)
         if news.status_code == 200:
             soup = BeautifulSoup(news.content, "html.parser")
             try:
                 title = soup.find("h1", class_="title-detail").text
                 descriptiont = soup.find("p", class_="description").text
                 description = re.sub(r';', '', descriptiont)
-                # body = soup.find("article", class_="fck_detail")
-                # pchil = body.findChildren("p", class_="Normal", recursive=False)
-                # text = ''
-                # for child in pchil:
-                #     text += child.text
-                dict['title'].append(title)
-                dict['description'].append(description)
-                # data['content'] = text
+                body = soup.find("article", class_="fck_detail")
+                pchil = body.findChildren("p", class_="Normal", recursive=False)
+                text = ''
+                for child in pchil:
+                    text += child.text
+                # dict['title'].append(title)
+                # dict['description'].append(description)
+                dict['content'].append(text)
                 dict['topic'].append(tl)
-                dict['URL'] = hashlib.md5(link[22:].encode()).hexdigest()
+                # dict['URL'] = hashlib.md5(link[22:].encode()).hexdigest()
             except:
                 failed_links.append(link)
 
 
-def cr_pm(tl, i):
+def cr_pm(topic_list, num_page):
     extend = ''
-    if i >= 2:
-        extend = '-p' + str(i)
-    url = 'https://vnexpress.net/' + tl + extend
+    if num_page >= 2:
+        extend = '-p' + str(num_page)
+    url = 'https://vnexpress.net/' + topic_list + extend
     response = requests.get(url)
     if response.status_code == 200:
         sour_parent = BeautifulSoup(response.content, "html.parser")
         titles = sour_parent.findAll('h2', class_='title-news')
         if titles:
             links = [link.find('a').attrs["href"] for link in titles]
-            crawl(links, tl)
+            crawl(links, topic_list)
         else:
             titles = sour_parent.findAll('h3', class_='title-news')
             links = [link.find('a').attrs["href"] for link in titles]
-            crawl(links, tl)
+            crawl(links, topic_list)
 
 
-def mul_pro(tl):
-    for i in range(1, 21):
-        cr_pm(tl, i)
+def mul_pro(topic_list):
+    for num_page in range(1, 2):
+        cr_pm(topic_list, num_page)
 
 
 if __name__ == '__main__':
-    topic_lists = ['the-gioi', 'the-thao', 'phap-luat']
+    topic_lists = ['the-gioi', 'the-thao', 'khoa-hoc']
+    # topic_lists = ['the-gioi']
     processes = []
     for topic in topic_lists:
         mul_pro(topic)
@@ -71,4 +73,4 @@ if __name__ == '__main__':
 # with Pool(6) as pool:
 #     pool.map(cr_pm, range(2, 18), chunksize=3)
 df = pd.DataFrame(dict)
-df.to_csv('/home/code/NLP/First_model_of_mine/Get_Data/data2.csv')
+df.to_csv('/home/phanminhgiang/Lab/lab601/thesis/phanminhgiang/Data/Get_Data/data.csv')
