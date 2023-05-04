@@ -1,1 +1,1 @@
-,title,description,content
+,topic,content
