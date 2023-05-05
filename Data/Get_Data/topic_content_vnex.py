@@ -1,10 +1,10 @@
-import re
-import concurrent
+# import re
+# import concurrent
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from multiprocessing import Process
-import hashlib
+# import hashlib
 
 dict = {'topic': [], 'title':[], 'content':[] }
 failed_links = []
