@@ -1,50 +1,34 @@
-from pyvi.ViTokenizer import tokenize
-import re, os, string
+import re
+import string
+
+from pyvi import ViTokenizer
 import pandas as pd
 
+corpus_file = "/home/phanminhgiang/Lab/lab601/thesis/Data/wikicorpus.txt"
+stopwords_file = "/home/phanminhgiang/Lab/lab601/thesis/phanminhgiang/Data/stopwords.csv"
+stopwords = pd.read_csv(stopwords_file, header=None)[0].tolist()
 
-# list stopwords
-filename = './stopwords.csv'
-data = pd.read_csv(filename, sep="\t", encoding='utf-8')
-list_stopwords = data['stopwords']
+def preprocess_text(text):
+    text = re.sub(r'<.*?>', '', text)
+    words = ViTokenizer.tokenize(text).split()
+    words = [word for word in words if word not in stopwords]
+    return " ".join(words)
 
-def remove_stopword(text):
-    pre_text = []
-    words = text.split()
-    for word in words:
-        if word not in list_stopwords:
-            pre_text.append(word)
-    text2 = ' '.join(pre_text)
-    return text2
+def segment_sentences(text):
+    sentences = re.split(r'(?<=[\.\?\!])\s+', text)
+    sentences = [sentence.strip() for sentence in sentences]
+    return sentences
 
-def sentence_segment(text):
-    sents = re.split("([.?!])?[\n]+|[.?!] ", text)
-    return sents
+def segment_words(sentence):
+    words = ViTokenizer.tokenize(sentence).split()
+    words = [word for word in words if word not in stopwords]
+    return words
 
-
-def word_segment(sent):
-    sent = tokenize(sent.decode('utf-8'))
-    return sent
-
-path_to_corpus = '../wikicorpus.txt'
-
-
-f_w = open('../datatrain.txt', 'w')
-for i, sub_dir in enumerate(os.listdir(path_to_corpus)):
-    path_to_subdir = path_to_corpus + '/' + sub_dir
-    for j, file_name in enumerate(os.listdir(path_to_subdir)):
-        with open(path_to_subdir + '/' + file_name) as f_r:
-            contents = f_r.read().strip().split('</doc>')
-            for content in contents:
-                if (len(content) < 5):
-                    continue
-                sents = sentence_segment(content)
-                for sent in sents:
-                    if(sent != None):
-                        sent = word_segment(sent)
-                        sent = remove_stopword(sent)
-                        if(len(sent.split()) > 1):
-                            f_w.write(sent.encode('utf-8') + '\n')
-            print ("Done ", i + 1, ':', j + 1)
-
-f_w.close()
+with open(corpus_file, "r", encoding="utf-8") as f:
+    with open("datatrain.txt", "w", encoding="utf-8") as f_datatrain:
+        for line in f:
+            line = preprocess_text(line)
+            sentences = segment_sentences(line)
+            for sentence in sentences:
+                words = segment_words(sentence)
+                f_datatrain.write(" ".join(words) + "\n")
