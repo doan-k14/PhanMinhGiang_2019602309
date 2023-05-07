@@ -18,5 +18,5 @@ def read_data(path):
 if __name__ == '__main__':
     train_data = read_data(pathdata)
 
-    model = Word2Vec(train_data, vector_size=150, window=10, min_count=2, workers=4, sg=0)
-    model.wv.save(".word2vec_skipgram.model")
+    model = Word2Vec(train_data, vector_size=150, window=10, min_count=5, workers=4, sg=0)
+    model.save("word_embedding.model")

@@ -26,9 +26,13 @@ def segment_words(sentence):
 
 with open(corpus_file, "r", encoding="utf-8") as f:
     with open("datatrain.txt", "w", encoding="utf-8") as f_datatrain:
+        count =0
         for line in f:
+            count += 1
             line = preprocess_text(line)
             sentences = segment_sentences(line)
             for sentence in sentences:
                 words = segment_words(sentence)
                 f_datatrain.write(" ".join(words) + "\n")
+            if (count % 10000 == 0):
+                print("Writing"+str(count))
