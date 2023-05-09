@@ -17,12 +17,9 @@ class WordEmbedding:
         vec = [model.wv[word] for word in word_list if word in model.wv]
         vec_dict[sentence]=np.mean(vec, axis=0)
         return vec_dict[sentence]
-    """
-    This function receive a sentence than encode it to a vector and add it to the vector dictionary of the model
-    """
 
 
-    def vec2sent(self, vector)->string:
+    def vec2sent(self, vector):
         vec_dict = self.model_vec_dict
         for key, value in vec_dict.items():
             if str(value) == str(vector):
@@ -30,9 +27,6 @@ class WordEmbedding:
 
 
     def para2vecdict(self, paragraph):
-        """
-        This function receive a paragraph contains many sentences than encode it to vectors and add it to the vector dictionary of the model
-        """
         listpunctuation = string.punctuation.replace('_', '').replace('.','').replace(',','')
         for i in listpunctuation:
             paragraph = paragraph.replace(i, ' ')
@@ -43,10 +37,8 @@ class WordEmbedding:
             self.sent2vec(sent)
 
 
-
-    def veclist2para(self, vec_list)->string:
+    def veclist2para(self, vec_list):
         paragraph = ''
-        model_vec_dict = self.model_vec_dict
         for vec in vec_list:
-            paragraph += self.vec2sent(vec) + '. '
+            paragraph += str(self.vec2sent(vec)) + '. '
         return paragraph
