@@ -1,7 +1,7 @@
 from gensim.models import Word2Vec
 
 # path data
-pathdata = '/home/phanminhgiang/Lab/lab601/thesis/phanminhgiang/Data/datatrain.txt'
+pathdata = '/home/giangpm/thesis/PhanMinhGiang_2019602309/Data/datatrain.txt'
 
 def read_data(path):
     traindata = []
@@ -14,5 +14,5 @@ def read_data(path):
 if __name__ == '__main__':
     train_data = read_data(pathdata)
 
-    model = Word2Vec(train_data, vector_size=150, window=10, min_count=2, workers=4, sg=0)
-    model.save("../Models/W2V/word_embedding.model")
+    model = Word2Vec(train_data, vector_size=150, window=10, min_count=2, workers=8, sg=0)
+    model.save("../Model_file/word_embedding.model")

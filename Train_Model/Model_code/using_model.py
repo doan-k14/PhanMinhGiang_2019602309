@@ -6,7 +6,7 @@ class WordEmbedding:
 
 
     def __init__(self, model_vec_dict:dict):
-        self.model = Word2Vec.load('/home/phanminhgiang/Lab/lab601/thesis/phanminhgiang/Train_Model/Model_files/W2V/word_embedding.model')
+        self.model = Word2Vec.load('../Model_file/word_embedding.model')
         self.model_vec_dict = model_vec_dict
 
 

@@ -4,8 +4,8 @@ import string
 from pyvi import ViTokenizer
 import pandas as pd
 
-corpus_file = "/home/phanminhgiang/Lab/lab601/thesis/Data/wikicorpus.txt"
-stopwords_file = "/home/phanminhgiang/Lab/lab601/thesis/phanminhgiang/Data/stopwords.csv"
+corpus_file = "/home/giangpm/thesis/Data/wikicorpus.txt"
+stopwords_file = "./stopwords.csv"
 stopwords = pd.read_csv(stopwords_file, header=None)[0].tolist()
 
 def preprocess_text(text):
@@ -25,7 +25,7 @@ def segment_words(sentence):
     return words
 
 with open(corpus_file, "r", encoding="utf-8") as f:
-    with open("datatrain.txt", "w", encoding="utf-8") as f_datatrain:
+    with open("./datatrain.txt", "w", encoding="utf-8") as f_datatrain:
         count =0
         for line in f:
             count += 1
